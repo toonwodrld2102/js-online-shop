@@ -1,129 +1,203 @@
-// Online Shop - Task 2
+// ==========================================
+// ONLINE SHOP - TASK 2
+// ==========================================
 
-// Global scope: Products and cart can be used throughout the program.
+
+// PART A: ARRAYS
+
+// GLOBAL SCOPE:
+// Products and cart are declared outside functions.
+// This allows all three functions to access them.
+
 const products = [
 
     {
-
         productName: "Running Shoes",
-
         price: 79.99,
-
         category: "Footwear",
-
         inStock: true
-
     },
 
     {
-
         productName: "Winter Boots",
-
         price: 99.99,
-
         category: "Footwear",
-
         inStock: false
-
     },
 
     {
-
         productName: "Chocolate Bar",
-
         price: 2.99,
-
-        category: "Food",
-
+        category: "Food item",
         inStock: true
-
     },
 
     {
-
         productName: "Potato Chips",
-
         price: 3.49,
-
-        category: "Food",
-
+        category: "Food item",
         inStock: true
-
     }
 
 ];
 
 
-// Empty cart array
+// Create an empty shopping cart array.
 const cart = [];
 
-// Log the entire products array
-console.log("Products Array:");
+
+// Display the entire products array in the console.
+console.log("========== PRODUCTS ARRAY ==========");
 console.log(products);
 
 
-// Function to add a product to the cart
+// ==========================================
+// PART B: FUNCTIONS
+// ==========================================
+
+
+// FUNCTION 1: addToCart()
+
+// This function accepts a product name as a parameter.
+// It searches for the product and checks if it is in stock.
+
 function addToCart(productName) {
+
+    // Find the product that matches the requested name.
     const product = products.find(function(item) {
         return item.productName === productName;
     });
 
+    // Check whether the product exists.
     if (product === undefined) {
+
         console.log(productName + " was not found.");
-    } else if (product.inStock) {
+
+    }
+
+    // Check whether the product is available.
+    else if (product.inStock === true) {
+
+        // Add the product to the shopping cart.
         cart.push(product);
+
         console.log(product.productName + " was added to the cart.");
-    } else {
+
+    }
+
+    // Display an error if the product is out of stock.
+    else {
+
         console.log(product.productName + " is currently out of stock.");
+
     }
+
 }
 
 
-// Function to view the cart
+// FUNCTION 2: viewCart()
+
+// This function displays all products in the cart
+// and calculates the total price.
+
 function viewCart() {
-    let totalPrice = 0;
 
-    console.log("Shopping Cart:");
+    // FUNCTION SCOPE:
+    // var makes totalPrice available throughout this function.
+    var totalPrice = 0;
 
+    console.log("========== SHOPPING CART ==========");
+
+    // Loop through every product inside the cart.
     for (const item of cart) {
-        console.log(item.productName + " - $" + item.price.toFixed(2));
+
+        console.log(
+            item.productName + " - $" + item.price.toFixed(2)
+        );
+
+        // Add each product's price to the total.
         totalPrice += item.price;
+
     }
 
+    // Display the total shopping cart price.
     console.log("Total Price: $" + totalPrice.toFixed(2));
+
 }
 
 
-// Function to filter products by category
+// FUNCTION 3: filterByCategory()
+
+// This function accepts a category and finds matching products.
+
 function filterByCategory(category) {
+
+    // Use filter() to create an array containing matching products.
     const filteredProducts = products.filter(function(item) {
+
         return item.category === category;
+
     });
 
-    console.log("Products in the " + category + " category:");
+    console.log("========== " + category.toUpperCase() + " PRODUCTS ==========");
 
+    // Display each product that matches the selected category.
     for (const item of filteredProducts) {
-        console.log(item.productName + " - $" + item.price.toFixed(2));
+
+        console.log(
+            item.productName + " - $" + item.price.toFixed(2)
+        );
+
     }
+
 }
 
 
-// Test the addToCart function
-addToCart("Wireless Headphones");
-addToCart("Winter Boots");
-addToCart("Chocolate Bar");
-addToCart("Laptop");
+// ==========================================
+// TESTING THE THREE FUNCTIONS
+// ==========================================
 
-// Test the viewCart function
+
+// Test addToCart() with a product that does not exist.
+addToCart("Wireless Headphones");
+
+// Test addToCart() with an out-of-stock product.
+addToCart("Winter Boots");
+
+// Test addToCart() with products that are available.
+addToCart("Running Shoes");
+addToCart("Chocolate Bar");
+addToCart("Potato Chips");
+
+
+// Test viewCart() to display the cart and total price.
 viewCart();
 
-// Test the filterByCategory function
+
+// Test filterByCategory() for footwear.
 filterByCategory("Footwear");
-filterByCategory("Food");
+
+// Test filterByCategory() for food items.
+filterByCategory("Food item");
 
 
-// Block scope example
+// ==========================================
+// SCOPE DEMONSTRATION
+// ==========================================
+
+
+// BLOCK SCOPE:
+// The message variable only exists inside this IF block.
+
 if (cart.length > 0) {
-    const message = "The cart contains " + cart.length + " item(s).";
+
+    const message = "Your cart contains " + cart.length + " item(s).";
+
     console.log(message);
+
 }
+
+
+// Display the final cart array.
+console.log("========== FINAL CART ARRAY ==========");
+console.log(cart);
