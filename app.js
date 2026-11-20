@@ -1,71 +1,18 @@
-// Online Shop - Task 3
-
-// Product array containing all available products
-
-const products = [
-    {
-        productName: "Running Shoes",
-        price: 79.99,
-        category: "Footwear",
-        inStock: true
-    },
-
-    {
-        productName: "Winter Boots",
-        price: 99.99,
-        category: "Footwear",
-        inStock: false
-    },
-
-    {
-        productName: "Chocolate Bar",
-        price: 2.99,
-        category: "Food item",
-        inStock: true
-    },
-
-    {
-        productName: "Potato Chips",
-        price: 3.49,
-        category: "Food item",
-        inStock: true
-    }
-];
+// Online Shop - Task 4
 
 
-// Shopping cart array
+// Import products and shopping cart functions
 
-const cart = [];
+import { products } from "./products.js";
 
-
-// PART 1: Add products to the shopping cart
-
-function addToCart(productName) {
-
-    const product = products.find(function(item) {
-        return item.productName === productName;
-    });
-
-    if (!product) {
-        console.log("Product not found.");
-        return;
-    }
-
-    if (!product.inStock) {
-        console.log(productName + " is currently out of stock.");
-        return;
-    }
-
-    cart.push(product);
-
-    updateCartCount();
-
-    console.log(productName + " was added to your cart.");
-
-}
+import {
+    cart,
+    addToCart,
+    viewCart
+} from "./cart.js";
 
 
-// PART 2: Update the shopping cart counter
+// Update shopping cart counter
 
 function updateCartCount() {
 
@@ -80,28 +27,7 @@ function updateCartCount() {
 }
 
 
-// PART 3: View shopping cart
-
-function viewCart() {
-
-    console.log("Your Shopping Cart:");
-
-    let totalPrice = 0;
-
-    for (let i = 0; i < cart.length; i++) {
-
-        console.log(cart[i].productName + " - $" + cart[i].price);
-
-        totalPrice += cart[i].price;
-
-    }
-
-    console.log("Total Price: $" + totalPrice.toFixed(2));
-
-}
-
-
-// PART 4: Filter products by category
+// Filter products by category
 
 function filterByCategory(category) {
 
@@ -124,7 +50,7 @@ function filterByCategory(category) {
 }
 
 
-// PART 5: Create category filter buttons
+// Create category filter buttons
 
 function renderCategoryButtons() {
 
@@ -137,6 +63,7 @@ function renderCategoryButtons() {
         return product.category;
 
     }))];
+
 
     categories.forEach(function(category) {
 
@@ -157,43 +84,52 @@ function renderCategoryButtons() {
 }
 
 
-// PART 6: Dynamically create product cards
+// Create product cards dynamically
 
 function renderProducts(productsToDisplay) {
 
     const productGrid = document.getElementById("product-grid");
 
-    // Clear existing product cards
+    const errorMessage = document.getElementById("error-message");
+
+    // Clear existing products
 
     productGrid.innerHTML = "";
 
-    // Loop through each product
+    errorMessage.textContent = "";
+
+
+    // Loop through products
 
     productsToDisplay.forEach(function(product) {
 
-        // Create a new product card
+        // Create product card
 
         const card = document.createElement("div");
 
         card.className = "product-card";
 
-        // Create product name
+
+        // Product name
 
         const name = document.createElement("h3");
 
         name.textContent = product.productName;
 
-        // Create product category
+
+        // Product category
 
         const category = document.createElement("p");
 
         category.textContent = "Category: " + product.category;
 
-        // Create product price
+
+        // Product price
 
         const price = document.createElement("p");
 
         price.textContent = "Price: $" + product.price.toFixed(2);
+
 
         // Create Add to Cart button
 
@@ -201,27 +137,63 @@ function renderProducts(productsToDisplay) {
 
         button.textContent = "Add to Cart";
 
-        // Disable button if product is out of stock
 
-        if (!product.inStock) {
+        // Attach event listener
 
-            button.textContent = "Out of Stock";
+        button.addEventListener("click", function() {
 
-            button.disabled = true;
+            // Clear previous error messages
 
-        } else {
+            errorMessage.textContent = "";
 
-            // Attach click event listener
 
-            button.addEventListener("click", function() {
+            try {
+
+                // Attempt to add the product to the cart
 
                 addToCart(product.productName);
 
-            });
+            }
 
-        }
+            catch (error) {
 
-        // Add product information to the card
+                // Display a user-friendly error message
+
+                if (error.message === "PRODUCT_NOT_FOUND") {
+
+                    errorMessage.textContent =
+                        "Sorry, this product could not be found.";
+
+                }
+
+                else if (error.message === "OUT_OF_STOCK") {
+
+                    errorMessage.textContent =
+                        "Sorry, this product is currently out of stock.";
+
+                }
+
+                else {
+
+                    errorMessage.textContent =
+                        "Something went wrong. Please try again.";
+
+                }
+
+            }
+
+            finally {
+
+                // Always update the cart counter
+
+                updateCartCount();
+
+            }
+
+        });
+
+
+        // Add product information to card
 
         card.appendChild(name);
 
@@ -231,7 +203,8 @@ function renderProducts(productsToDisplay) {
 
         card.appendChild(button);
 
-        // Add completed card to the product grid
+
+        // Add card to product grid
 
         productGrid.appendChild(card);
 
@@ -240,7 +213,7 @@ function renderProducts(productsToDisplay) {
 }
 
 
-// PART 7: Start the online shop
+// Start the online shop
 
 renderCategoryButtons();
 
