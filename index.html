@@ -8,6 +8,7 @@
     <title>My Online Shop</title>
 
     <style>
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -72,6 +73,13 @@
         .product-card button:hover {
             background-color: #555;
         }
+
+        #error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
     </style>
 
 </head>
@@ -100,11 +108,11 @@
 
             <p>Browse our available products below.</p>
 
-            <!-- Category filter buttons will appear here -->
             <div id="category-filters"></div>
 
-            <!-- Product cards will appear here -->
             <div id="product-grid"></div>
+
+            <p id="error-message" aria-live="polite"></p>
 
         </section>
 
@@ -118,7 +126,7 @@
 
     </main>
 
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 
 </body>
 
