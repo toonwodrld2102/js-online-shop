@@ -1,16 +1,8 @@
-// ==========================================
-// ONLINE SHOP - TASK 2
-// ==========================================
+// Online Shop - Task 3
 
-
-// PART A: ARRAYS
-
-// GLOBAL SCOPE:
-// Products and cart are declared outside functions.
-// This allows all three functions to access them.
+// Product array containing all available products
 
 const products = [
-
     {
         productName: "Running Shoes",
         price: 79.99,
@@ -38,166 +30,220 @@ const products = [
         category: "Food item",
         inStock: true
     }
-
 ];
 
 
-// Create an empty shopping cart array.
+// Shopping cart array
+
 const cart = [];
 
 
-// Display the entire products array in the console.
-console.log("========== PRODUCTS ARRAY ==========");
-console.log(products);
-
-
-// ==========================================
-// PART B: FUNCTIONS
-// ==========================================
-
-
-// FUNCTION 1: addToCart()
-
-// This function accepts a product name as a parameter.
-// It searches for the product and checks if it is in stock.
+// PART 1: Add products to the shopping cart
 
 function addToCart(productName) {
 
-    // Find the product that matches the requested name.
     const product = products.find(function(item) {
         return item.productName === productName;
     });
 
-    // Check whether the product exists.
-    if (product === undefined) {
-
-        console.log(productName + " was not found.");
-
+    if (!product) {
+        console.log("Product not found.");
+        return;
     }
 
-    // Check whether the product is available.
-    else if (product.inStock === true) {
-
-        // Add the product to the shopping cart.
-        cart.push(product);
-
-        console.log(product.productName + " was added to the cart.");
-
+    if (!product.inStock) {
+        console.log(productName + " is currently out of stock.");
+        return;
     }
 
-    // Display an error if the product is out of stock.
-    else {
+    cart.push(product);
 
-        console.log(product.productName + " is currently out of stock.");
+    updateCartCount();
 
-    }
+    console.log(productName + " was added to your cart.");
 
 }
 
 
-// FUNCTION 2: viewCart()
+// PART 2: Update the shopping cart counter
 
-// This function displays all products in the cart
-// and calculates the total price.
+function updateCartCount() {
+
+    const cartCount = document.getElementById("cart-count");
+
+    const cartDisplay = document.getElementById("cart-display");
+
+    cartCount.textContent = cart.length;
+
+    cartDisplay.textContent = cart.length;
+
+}
+
+
+// PART 3: View shopping cart
 
 function viewCart() {
 
-    // FUNCTION SCOPE:
-    // var makes totalPrice available throughout this function.
-    var totalPrice = 0;
+    console.log("Your Shopping Cart:");
 
-    console.log("========== SHOPPING CART ==========");
+    let totalPrice = 0;
 
-    // Loop through every product inside the cart.
-    for (const item of cart) {
+    for (let i = 0; i < cart.length; i++) {
 
-        console.log(
-            item.productName + " - $" + item.price.toFixed(2)
-        );
+        console.log(cart[i].productName + " - $" + cart[i].price);
 
-        // Add each product's price to the total.
-        totalPrice += item.price;
+        totalPrice += cart[i].price;
 
     }
 
-    // Display the total shopping cart price.
     console.log("Total Price: $" + totalPrice.toFixed(2));
 
 }
 
 
-// FUNCTION 3: filterByCategory()
-
-// This function accepts a category and finds matching products.
+// PART 4: Filter products by category
 
 function filterByCategory(category) {
 
-    // Use filter() to create an array containing matching products.
-    const filteredProducts = products.filter(function(item) {
+    if (category === "All") {
 
-        return item.category === category;
+        renderProducts(products);
 
-    });
+    } else {
 
-    console.log("========== " + category.toUpperCase() + " PRODUCTS ==========");
+        const filteredProducts = products.filter(function(product) {
 
-    // Display each product that matches the selected category.
-    for (const item of filteredProducts) {
+            return product.category === category;
 
-        console.log(
-            item.productName + " - $" + item.price.toFixed(2)
-        );
+        });
+
+        renderProducts(filteredProducts);
 
     }
 
 }
 
 
-// ==========================================
-// TESTING THE THREE FUNCTIONS
-// ==========================================
+// PART 5: Create category filter buttons
 
+function renderCategoryButtons() {
 
-// Test addToCart() with a product that does not exist.
-addToCart("Wireless Headphones");
+    const filterContainer = document.getElementById("category-filters");
 
-// Test addToCart() with an out-of-stock product.
-addToCart("Winter Boots");
+    filterContainer.innerHTML = "";
 
-// Test addToCart() with products that are available.
-addToCart("Running Shoes");
-addToCart("Chocolate Bar");
-addToCart("Potato Chips");
+    const categories = ["All", ...new Set(products.map(function(product) {
 
+        return product.category;
 
-// Test viewCart() to display the cart and total price.
-viewCart();
+    }))];
 
+    categories.forEach(function(category) {
 
-// Test filterByCategory() for footwear.
-filterByCategory("Footwear");
+        const button = document.createElement("button");
 
-// Test filterByCategory() for food items.
-filterByCategory("Food item");
+        button.textContent = category;
 
+        button.addEventListener("click", function() {
 
-// ==========================================
-// SCOPE DEMONSTRATION
-// ==========================================
+            filterByCategory(category);
 
+        });
 
-// BLOCK SCOPE:
-// The message variable only exists inside this IF block.
+        filterContainer.appendChild(button);
 
-if (cart.length > 0) {
-
-    const message = "Your cart contains " + cart.length + " item(s).";
-
-    console.log(message);
+    });
 
 }
 
 
-// Display the final cart array.
-console.log("========== FINAL CART ARRAY ==========");
-console.log(cart);
+// PART 6: Dynamically create product cards
+
+function renderProducts(productsToDisplay) {
+
+    const productGrid = document.getElementById("product-grid");
+
+    // Clear existing product cards
+
+    productGrid.innerHTML = "";
+
+    // Loop through each product
+
+    productsToDisplay.forEach(function(product) {
+
+        // Create a new product card
+
+        const card = document.createElement("div");
+
+        card.className = "product-card";
+
+        // Create product name
+
+        const name = document.createElement("h3");
+
+        name.textContent = product.productName;
+
+        // Create product category
+
+        const category = document.createElement("p");
+
+        category.textContent = "Category: " + product.category;
+
+        // Create product price
+
+        const price = document.createElement("p");
+
+        price.textContent = "Price: $" + product.price.toFixed(2);
+
+        // Create Add to Cart button
+
+        const button = document.createElement("button");
+
+        button.textContent = "Add to Cart";
+
+        // Disable button if product is out of stock
+
+        if (!product.inStock) {
+
+            button.textContent = "Out of Stock";
+
+            button.disabled = true;
+
+        } else {
+
+            // Attach click event listener
+
+            button.addEventListener("click", function() {
+
+                addToCart(product.productName);
+
+            });
+
+        }
+
+        // Add product information to the card
+
+        card.appendChild(name);
+
+        card.appendChild(category);
+
+        card.appendChild(price);
+
+        card.appendChild(button);
+
+        // Add completed card to the product grid
+
+        productGrid.appendChild(card);
+
+    });
+
+}
+
+
+// PART 7: Start the online shop
+
+renderCategoryButtons();
+
+renderProducts(products);
+
+updateCartCount();
