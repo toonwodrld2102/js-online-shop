@@ -1,35 +1,57 @@
-// Online Shop - Product Information
+// API URL
+const API_URL = "https://dummyjson.com/products?limit=0";
 
-// Export the products array so other files can use it.
 
-export const products = [
+// Function to retrieve products from the API
+export async function loadProducts() {
 
-    {
-        productName: "Running Shoes",
-        price: 79.99,
-        category: "Footwear",
-        inStock: true
-    },
+    try {
 
-    {
-        productName: "Winter Boots",
-        price: 99.99,
-        category: "Footwear",
-        inStock: false
-    },
+        // Fetch products from the API
+        const response = await fetch(API_URL);
 
-    {
-        productName: "Chocolate Bar",
-        price: 2.99,
-        category: "Food item",
-        inStock: true
-    },
+        // Check if the request was successful
+        if (!response.ok) {
+            throw new Error("API request failed.");
+        }
 
-    {
-        productName: "Potato Chips",
-        price: 3.49,
-        category: "Food item",
-        inStock: true
+        // Convert the response into JSON
+        const data = await response.json();
+
+        // Return the products from the API
+        return data.products.map(product => ({
+
+            id: product.id,
+
+            name: product.title,
+
+            price: product.price,
+
+            category: product.category,
+
+            image: product.thumbnail,
+
+            description: product.description,
+
+            stock: product.stock,
+
+            inStock: product.stock > 0
+
+        }));
+
+    } catch (error) {
+
+        // Create a friendly error message
+        const friendlyError = new Error(
+            "Sorry! We could not load the products. Please try again later.",
+            { cause: error }
+        );
+
+        console.error(friendlyError);
+
+        // Return an empty array to prevent the application from crashing
+        return [];
+
     }
 
-];
+}
