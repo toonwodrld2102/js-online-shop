@@ -1,86 +1,94 @@
-// Online Shop - Shopping Cart Logic
-
-// Import products from products.js
-
-import { products } from "./products.js";
-
-
-// Create the shopping cart array
-
+// Shopping cart array
 export const cart = [];
 
 
+// CREATE AND UPDATE
 // Add products to the shopping cart
+export function addToCart(product) {
 
-export function addToCart(productName) {
+    // Check if the product already exists in the cart
+    const existingProduct = cart.find(
+        item => item.id === product.id
+    );
 
-    // Find the selected product
+    if (existingProduct) {
 
-    const product = products.find(function(item) {
+        // Increase quantity if the product already exists
+        existingProduct.quantity++;
 
-        return item.productName === productName;
+    } else {
+
+        // Add a new product with quantity of 1
+        cart.push({
+
+            id: product.id,
+
+            name: product.name,
+
+            price: product.price,
+
+            quantity: 1
+
+        });
+
+    }
+
+    console.log(product.name + " added to cart.");
+
+}
+
+
+// READ
+// Display the shopping cart
+export function viewCart() {
+
+    console.log("Shopping Cart:");
+
+    cart.forEach(item => {
+
+        console.log(
+            item.name +
+            " - Quantity: " +
+            item.quantity +
+            " - Price: $" +
+            item.price
+        );
 
     });
 
+}
 
-    // Check if the product exists
 
-    if (!product) {
+// DELETE
+// Remove products from the shopping cart
+export function removeFromCart(productName) {
 
-        throw new Error("PRODUCT_NOT_FOUND");
+    const productIndex = cart.findIndex(
+        item => item.name === productName
+    );
+
+    if (productIndex !== -1) {
+
+        cart.splice(productIndex, 1);
+
+        console.log(productName + " removed from cart.");
 
     }
-
-
-    // Check if the product is in stock
-
-    if (!product.inStock) {
-
-        throw new Error("OUT_OF_STOCK");
-
-    }
-
-
-    // Add the product to the shopping cart
-
-    cart.push(product);
-
-    return product;
 
 }
 
 
 // Calculate the shopping cart total
-
 export function calculateCartTotal() {
 
     let total = 0;
 
-    for (let i = 0; i < cart.length; i++) {
+    cart.forEach(item => {
 
-        total += cart[i].price;
+        total += item.price * item.quantity;
 
-    }
+    });
 
-    return total.toFixed(2);
-
-}
-
-
-// View shopping cart
-
-export function viewCart() {
-
-    console.log("Your Shopping Cart:");
-
-    for (let i = 0; i < cart.length; i++) {
-
-        console.log(
-            cart[i].productName + " - $" + cart[i].price
-        );
-
-    }
-
-    console.log("Total Price: $" + calculateCartTotal());
+    return total;
 
 }
